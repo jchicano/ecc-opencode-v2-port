@@ -48,7 +48,7 @@ destination, `opencode/agents/*.md` and `opencode/commands/*.md` to
 `"skills": ["<destination>/ecc/skills"]` to `opencode.json`. That is exactly
 what the installers do.
 
-> **Do not install global and local at the time.** The plugin auto-discovers and
+> **Do not install global and local at the same time.** The plugin auto-discovers and
 > registers 8 tools by name; with two copies OpenCode loads the last one and the
 > logs split across two locations. The installer warns when it detects this.
 
