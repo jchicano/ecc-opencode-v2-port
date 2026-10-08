@@ -1,0 +1,15 @@
+# Normalise line endings on commit; do not convert them on checkout.
+# Important for a repo used across Linux, macOS and Windows at once.
+* text=auto eol=lf
+
+# The payload is markdown/JS: always LF, readable diffs.
+*.md   text eol=lf
+*.mjs  text eol=lf
+*.js   text eol=lf
+*.json text eol=lf
+
+# Shell scripts must stay LF or they will not run on macOS/Linux.
+*.sh   text eol=lf
+
+# The skills payload mixes text files with binary assets.
+opencode/ecc/skills/** text=auto

@@ -1,0 +1,15 @@
+# The zips are build artifacts: they go to GitHub Releases, not into git.
+# Rebuild them with: bash scripts/release.sh
+dist/
+*.zip
+
+# Node
+node_modules/
+npm-debug.log*
+
+# System / editor
+.DS_Store
+Thumbs.db
+*.swp
+.idea/
+.vscode/

@@ -1,0 +1,21 @@
+# This port tracks the upstream ECC version it derives from.
+ecc_upstream_version=2.2.3
+ecc_upstream_package=ecc-universal@2.2.3
+ecc_upstream_released=2026-10-01
+ecc_upstream_repo=https://github.com/affaan-m/ECC
+ecc_upstream_license=MIT
+opencode_tested=2.0.23
+port_date=2026-10-06
+
+# Port status
+hooks_ported=4
+hooks_total_upstream=11
+tools_ported=8
+agents=25
+commands=35
+skills=293
+permission_ask_ported=false
+orphan_hooks=file.edited, todo.updated
+unverified=session.compaction, strict-profile hooks
+platforms_verified=linux
+platforms_expected=macos, windows
