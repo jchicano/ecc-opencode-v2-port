@@ -42,6 +42,14 @@ Idempotent. Touches nothing outside the destination. Uninstall with
 
 Bash + python3 alternative: `bash install.sh --global`.
 
+A second, live-verified variant lives in [`typescript/`](typescript/README.md):
+the actual TypeScript source installed in `~/.config/opencode/` (plugin +
+2 tools + shared store), written against opencode **2.0.22** via the npm
+package `@opencode/plugin` — including `permission.evaluate` hooks, which the
+bundle port intentionally skips. Its README documents what behaved
+differently on 2.0.22 (no `filesystem.changed` events, `write` → permission
+action `edit`, service stdout going to `/dev/null`).
+
 Without an installer: copy `opencode/plugins/` and `opencode/ecc/` to the
 destination, `opencode/agents/*.md` and `opencode/commands/*.md` to
 `<destination>/agents` and `<destination>/commands`, and add
@@ -67,6 +75,33 @@ what the installers do.
 bash block. On Windows `python3` does not ship by default (4 of the learning
 commands are *upstream* Python) and `$VAR` syntax is not `cmd.exe`. The plugin's
 **8 tools have no such problem**: they go through the API, not the shell.
+
+## TypeScript source (2.0.22-verified)
+
+`typescript/` is the **source of the live deployment** on
+`~/.config/opencode/` (2026-10-31): a second, independent port written as
+`Plugin.define({ id, setup })` through the npm package `@opencode/plugin`
+(pinned to the CLI version — the binary does not bundle it, but the package is
+installable) with the tools registered via `ctx.tool.transform`.
+
+It is the only port whose behaviour was verified end-to-end against a running
+server, and it documents findings that also apply to this bundle:
+
+- `session.idle` is never emitted on 2.0.22/2.0.23; the `console.log` audit is
+  scheduled from `session.step.ended` (60 s / 30 s debounce respectively).
+- **No filesystem events** (`file.watcher.updated` / `filesystem.changed`)
+  ever reach the plugin event stream on 2.0.22 — nothing but
+  `tool.execute.after` on `edit`/`write` can feed change tracking.
+- The tool V2 calls `shell` still evaluates permissions under the `edit`
+  action for `write` calls (`write` → action `edit`).
+- Log: in service mode the server pipes stdout to `/dev/null` and stderr never
+  reaches the log file, so plugin `console.*` output is lost there; the TS
+  plugin appends directly to `opencode.log` in the same `key=value` format.
+- Servers started before `node_modules` was installed keep failing plugin hot
+  reloads (`Cannot find package '@opencode/plugin'`) until restarted.
+
+See [`typescript/README.md`](typescript/README.md) for the full verified
+behaviour table and deployment steps.
 
 ## Why this port existed
 

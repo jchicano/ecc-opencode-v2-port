@@ -51,3 +51,36 @@ OpenCode 2.0.23.
   PHP/WordPress project unless the roots are changed.
 - The 6 commands that run scripts require `python3` (4 of them) or a POSIX
   shell (2): problematic on Windows. The 8 tools do not — they go via the API.
+
+## [2.2.2-ts] — 2026-10-31
+
+Second variant, independently developed and **live-verified** on the machine it
+runs in: OpenCode **2.0.22** + ECC 2.2.2 (local install), TypeScript source
+under [`typescript/`](typescript/README.md). Does not alter the 2.2.3 bundle.
+
+### Added
+
+- `permission.evaluate` hook (skipped in the 2.2.3 bundle): converts
+  `ask`→`allow` for read-only tools, formatters and test commands; never
+  weakens an explicit allow/deny. Registered findings: the `write` tool is
+  evaluated as permission action `edit`; the shell tool action is `shell`.
+- Logging by appending directly to `~/.local/share/opencode/log/opencode.log`
+  in the server logger's `key=value` format, tagged `plugin=ecc-hooks`
+  (verified: the service pipes stdout to `/dev/null` and stderr never reaches
+  the log file, so `console.*` output is lost in service mode).
+
+### Verified behaviours (2.0.22)
+
+- Plugin loads and both custom tools execute end-to-end (`changed-files`
+  reported a tool-written file as `added`; `dependency-analyzer` returned
+  valid analysis).
+- `tool.execute.before/after` feed the changed-files store, distinguishing
+  `added` from `modified`.
+- `shell.create.before` injects `ECC_VERSION`, `ECC_PLUGIN`, profile and
+  `PROJECT_ROOT` into real command environments.
+- Console.log audit scheduled with a 30 s debounce from `session.step.ended`
+  (`session.idle` not observed on 2.0.22 either, confirming the 2.0.23 note).
+- `filesystem.changed` is **not emitted** by 2.0.22 (confirmed by
+  instrumenting the event stream and by the binary's strings): the schema
+  definition exists, but no general watcher feeds the stream. Handler kept for
+  forward compatibility; external (non-tool) edits are therefore not tracked.
