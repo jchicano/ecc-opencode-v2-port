@@ -88,7 +88,7 @@ It is the only port whose behaviour was verified end-to-end against a running
 server, and it documents findings that also apply to this bundle:
 
 - `session.idle` is never emitted on 2.0.22/2.0.23; the `console.log` audit is
-  scheduled from `session.step.ended` (60 s / 30 s debounce respectively).
+  scheduled from `session.step.ended` with a 30 s debounce in both ports.
 - **No filesystem events** (`file.watcher.updated` / `filesystem.changed`)
   ever reach the plugin event stream on 2.0.22 — nothing but
   `tool.execute.after` on `edit`/`write` can feed change tracking.
